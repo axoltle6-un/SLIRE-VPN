@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, TextInput, KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import { ChevronLeft, Signal, Search, XCircle } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
+import { BlurView } from 'expo-blur';
 import { colors } from '../theme/colors';
 import { useVpnStore } from '../store/useVpnStore';
 import { useNavigation } from '@react-navigation/native';
@@ -9,24 +11,36 @@ export default function LocationsScreen() {
   const { servers, selectedServer, setServer } = useVpnStore();
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Fade in animation for the list
+  const listOpacity = useRef(new Animated.Value(0)).current;
+  const listTranslate = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(listOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+      Animated.spring(listTranslate, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true })
+    ]).start();
+  }, []);
 
   const handleSelect = (server: any) => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setServer(server);
     navigation.goBack();
   };
 
-  // Filter massive list of 40+ countries
   const filteredServers = servers.filter(s => 
     s.country.toLowerCase().includes(searchQuery.toLowerCase()) || 
     s.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderItem = ({ item }: { item: any }) => {
+  const renderItem = ({ item, index }: { item: any, index: number }) => {
     const isSelected = selectedServer.id === item.id;
     return (
       <TouchableOpacity 
         style={[styles.serverCard, isSelected && styles.serverCardActive]}
         onPress={() => handleSelect(item)}
+        activeOpacity={0.7}
       >
         <Text style={styles.flag}>{item.flag}</Text>
         <View style={styles.serverInfo}>
@@ -46,14 +60,14 @@ export default function LocationsScreen() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <ChevronLeft color={colors.text} size={28} />
+            <ChevronLeft color={colors.text} size={30} />
           </TouchableOpacity>
-          <Text style={styles.title}>All Locations</Text>
-          <View style={{ width: 28 }} />
+          <Text style={styles.title}>Global Nodes</Text>
+          <View style={{ width: 30 }} />
         </View>
 
         <View style={styles.searchContainer}>
-          <View style={styles.searchBar}>
+          <BlurView intensity={20} tint="dark" style={styles.searchBar}>
             <Search color={colors.textGray} size={20} />
             <TextInput
               style={styles.searchInput}
@@ -64,19 +78,20 @@ export default function LocationsScreen() {
               autoCorrect={false}
             />
             {searchQuery.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <TouchableOpacity onPress={() => setSearchQuery('')} hitSlop={{top:10, bottom:10, left:10, right:10}}>
                 <XCircle color={colors.textGray} size={20} />
               </TouchableOpacity>
             )}
-          </View>
+          </BlurView>
         </View>
 
-        <FlatList
+        <Animated.FlatList
           data={filteredServers}
           keyExtractor={item => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          style={{ opacity: listOpacity, transform: [{ translateY: listTranslate }] }}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No servers found for "{searchQuery}"</Text>
@@ -90,21 +105,21 @@ export default function LocationsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 10 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 16 },
   backButton: { padding: 8, marginLeft: -8 },
-  title: { color: colors.text, fontSize: 20, fontWeight: '700' },
-  searchContainer: { paddingHorizontal: 20, paddingBottom: 10 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, borderRadius: 12, paddingHorizontal: 16, height: 48 },
-  searchInput: { flex: 1, color: colors.text, fontSize: 16, marginLeft: 10, height: '100%' },
-  list: { padding: 20, paddingTop: 10 },
-  serverCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, padding: 16, borderRadius: 16, marginBottom: 12 },
-  serverCardActive: { borderColor: colors.primary, borderWidth: 1, backgroundColor: 'rgba(0,217,126,0.05)' },
-  flag: { fontSize: 24, marginRight: 16 },
+  title: { color: colors.text, fontSize: 20, fontWeight: '800' },
+  searchContainer: { paddingHorizontal: 20, paddingBottom: 16 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.6)', borderRadius: 16, paddingHorizontal: 16, height: 52, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  searchInput: { flex: 1, color: colors.text, fontSize: 16, marginLeft: 12, height: '100%', fontWeight: '500' },
+  list: { padding: 20, paddingTop: 4 },
+  serverCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, padding: 18, borderRadius: 20, marginBottom: 12, borderWidth: 1, borderColor: 'transparent' },
+  serverCardActive: { borderColor: colors.primary, backgroundColor: 'rgba(0,217,126,0.08)' },
+  flag: { fontSize: 28, marginRight: 16 },
   serverInfo: { flex: 1 },
-  city: { color: colors.text, fontSize: 16, fontWeight: '600', marginBottom: 4 },
-  country: { color: colors.textGray, fontSize: 13 },
+  city: { color: colors.text, fontSize: 17, fontWeight: '700', marginBottom: 4 },
+  country: { color: colors.textGray, fontSize: 13, fontWeight: '500' },
   metrics: { alignItems: 'flex-end' },
-  ping: { color: colors.textGray, fontSize: 12, marginTop: 4 },
+  ping: { color: colors.textGray, fontSize: 12, marginTop: 4, fontWeight: '600' },
   emptyContainer: { padding: 40, alignItems: 'center' },
-  emptyText: { color: colors.textGray, fontSize: 16 }
+  emptyText: { color: colors.textGray, fontSize: 16, fontWeight: '600' }
 });
