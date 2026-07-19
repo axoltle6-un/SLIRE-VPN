@@ -1,12 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import HomeScreen from './src/screens/HomeScreen';
-import LocationsScreen from './src/screens/LocationsScreen';
+import AppNavigator from './src/navigation/AppNavigator';
 import { colors } from './src/theme/colors';
-
-const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
@@ -22,10 +18,7 @@ export default function App() {
           notification: colors.primary,
         }
       }}>
-        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_bottom' }}>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Locations" component={LocationsScreen} />
-        </Stack.Navigator>
+        <AppNavigator />
       </NavigationContainer>
     </SafeAreaProvider>
   );

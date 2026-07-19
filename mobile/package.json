@@ -19,6 +19,7 @@
     "lucide-react-native": "^0.294.0",
     "react-native-svg": "13.9.0",
     "zustand": "4.4.7",
-    "axios": "1.6.2"
+    "axios": "1.6.2",
+    "@react-navigation/bottom-tabs": "6.5.11"
   }
 }
