@@ -1,0 +1,21 @@
+{
+  "background_color": "#090909",
+  "display": "standalone",
+  "lang": "en",
+  "name": "SLIRE VPN",
+  "short_name": "SLIRE VPN",
+  "start_url": "/?utm_source=web_app_manifest",
+  "orientation": "portrait",
+  "related_applications": [
+    {
+      "platform": "itunes",
+      "id": "com.slirevpn.app"
+    },
+    {
+      "platform": "play",
+      "url": "http://play.google.com/store/apps/details?id=com.slirevpn.app",
+      "id": "com.slirevpn.app"
+    }
+  ],
+  "prefer_related_applications": true
+}
