@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { Shield, Lock, Globe, AlertTriangle, Network, Fingerprint, Zap } from 'lucide-react-native';
-import * as Haptics from 'expo-haptics';
-import { BlurView } from 'expo-blur';
 import { colors } from '../theme/colors';
 
 export default function ProtectionScreen() {
@@ -17,7 +15,6 @@ export default function ProtectionScreen() {
   });
 
   const toggle = (key: keyof typeof switches) => {
-    Haptics.selectionAsync();
     setSwitches(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
@@ -27,7 +24,7 @@ export default function ProtectionScreen() {
       onPress={() => toggle(key)}
       style={styles.cardWrapper}
     >
-      <BlurView intensity={20} tint="dark" style={styles.card}>
+      <View style={styles.card}>
         <View style={[styles.iconContainer, switches[key] && styles.iconContainerActive]}>
           {React.cloneElement(icon, { color: switches[key] ? colors.primary : colors.text })}
         </View>
@@ -41,7 +38,7 @@ export default function ProtectionScreen() {
           trackColor={{ false: 'rgba(255,255,255,0.1)', true: colors.primary }}
           thumbColor="#fff"
         />
-      </BlurView>
+      </View>
     </TouchableOpacity>
   );
 
@@ -76,8 +73,8 @@ const styles = StyleSheet.create({
   scroll: { paddingHorizontal: 20 },
   sectionHeader: { color: colors.textGray, fontSize: 13, fontWeight: '800', marginTop: 24, marginBottom: 16, letterSpacing: 1.5 },
   cardWrapper: { marginBottom: 12 },
-  card: { backgroundColor: 'rgba(20,20,20,0.6)', borderRadius: 24, padding: 18, flexDirection: 'row', alignItems: 'center', overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
-  iconContainer: { width: 48, height: 48, borderRadius: 16, backgroundColor: 'rgba(255,255,255,0.05)', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
+  card: { backgroundColor: '#141414', borderRadius: 24, padding: 18, flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#222' },
+  iconContainer: { width: 48, height: 48, borderRadius: 16, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
   iconContainerActive: { backgroundColor: 'rgba(0, 217, 126, 0.1)' },
   textContainer: { flex: 1, paddingRight: 10 },
   title: { color: colors.text, fontSize: 16, fontWeight: '700', marginBottom: 4 },

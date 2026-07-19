@@ -8,7 +8,7 @@ export default function ProfileScreen() {
   const navigation = useNavigation<any>();
 
   const RowItem = ({ icon, title, subtitle, onPress, isDanger }: any) => (
-    <TouchableOpacity style={styles.row} onPress={onPress}>
+    <TouchableOpacity style={styles.row} onPress={onPress} activeOpacity={0.7}>
       <View style={[styles.iconBox, isDanger && { backgroundColor: 'rgba(255,77,77,0.1)' }]}>
         {icon}
       </View>
@@ -66,20 +66,20 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   header: { padding: 20, paddingTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  headerTitle: { color: colors.text, fontSize: 32, fontWeight: '800' },
+  headerTitle: { color: colors.text, fontSize: 32, fontWeight: '900' },
   scroll: { paddingHorizontal: 20, paddingBottom: 40 },
-  profileCard: { alignItems: 'center', backgroundColor: colors.card, padding: 30, borderRadius: 24, marginBottom: 30 },
-  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-  name: { color: colors.text, fontSize: 22, fontWeight: '700', marginBottom: 4 },
+  profileCard: { alignItems: 'center', backgroundColor: '#141414', padding: 30, borderRadius: 24, marginBottom: 30, borderWidth: 1, borderColor: '#222' },
+  avatar: { width: 80, height: 80, borderRadius: 40, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
+  name: { color: colors.text, fontSize: 22, fontWeight: '800', marginBottom: 4 },
   email: { color: colors.textGray, fontSize: 14, marginBottom: 16 },
   badge: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primary, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
   badgeText: { color: '#000', fontWeight: '800', marginLeft: 6, fontSize: 13 },
-  sectionTitle: { color: colors.textGray, fontSize: 13, fontWeight: '700', marginBottom: 12, marginLeft: 8, letterSpacing: 1 },
-  card: { backgroundColor: colors.card, borderRadius: 20, paddingHorizontal: 16, marginBottom: 24 },
+  sectionTitle: { color: colors.textGray, fontSize: 13, fontWeight: '800', marginBottom: 12, marginLeft: 8, letterSpacing: 1.5 },
+  card: { backgroundColor: '#141414', borderRadius: 24, paddingHorizontal: 16, marginBottom: 24, borderWidth: 1, borderColor: '#222' },
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 16 },
-  iconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.05)', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
+  iconBox: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#222', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
   rowText: { flex: 1 },
-  rowTitle: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  rowSub: { color: colors.textGray, fontSize: 13, marginTop: 4 },
-  divider: { height: 1, backgroundColor: 'rgba(255,255,255,0.05)', marginLeft: 56 }
+  rowTitle: { color: colors.text, fontSize: 16, fontWeight: '700' },
+  rowSub: { color: colors.textGray, fontSize: 13, marginTop: 4, fontWeight: '500' },
+  divider: { height: 1, backgroundColor: '#222', marginLeft: 56 }
 });

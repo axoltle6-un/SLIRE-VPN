@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, TextInput, KeyboardAvoidingView, Platform, Animated } from 'react-native';
 import { ChevronLeft, Signal, Search, XCircle } from 'lucide-react-native';
-import * as Haptics from 'expo-haptics';
-import { BlurView } from 'expo-blur';
 import { colors } from '../theme/colors';
 import { useVpnStore } from '../store/useVpnStore';
 import { useNavigation } from '@react-navigation/native';
@@ -12,19 +10,17 @@ export default function LocationsScreen() {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Fade in animation for the list
   const listOpacity = useRef(new Animated.Value(0)).current;
   const listTranslate = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(listOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
-      Animated.spring(listTranslate, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true })
+      Animated.timing(listOpacity, { toValue: 1, duration: 400, useNativeDriver: false }),
+      Animated.spring(listTranslate, { toValue: 0, friction: 8, tension: 40, useNativeDriver: false })
     ]).start();
   }, []);
 
   const handleSelect = (server: any) => {
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setServer(server);
     navigation.goBack();
   };
@@ -34,7 +30,7 @@ export default function LocationsScreen() {
     s.city.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const renderItem = ({ item, index }: { item: any, index: number }) => {
+  const renderItem = ({ item }: { item: any }) => {
     const isSelected = selectedServer.id === item.id;
     return (
       <TouchableOpacity 
@@ -67,7 +63,7 @@ export default function LocationsScreen() {
         </View>
 
         <View style={styles.searchContainer}>
-          <BlurView intensity={20} tint="dark" style={styles.searchBar}>
+          <View style={styles.searchBar}>
             <Search color={colors.textGray} size={20} />
             <TextInput
               style={styles.searchInput}
@@ -82,7 +78,7 @@ export default function LocationsScreen() {
                 <XCircle color={colors.textGray} size={20} />
               </TouchableOpacity>
             )}
-          </BlurView>
+          </View>
         </View>
 
         <Animated.FlatList
@@ -109,7 +105,7 @@ const styles = StyleSheet.create({
   backButton: { padding: 8, marginLeft: -8 },
   title: { color: colors.text, fontSize: 20, fontWeight: '800' },
   searchContainer: { paddingHorizontal: 20, paddingBottom: 16 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(20,20,20,0.6)', borderRadius: 16, paddingHorizontal: 16, height: 52, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)' },
+  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#141414', borderRadius: 16, paddingHorizontal: 16, height: 52, borderWidth: 1, borderColor: '#222' },
   searchInput: { flex: 1, color: colors.text, fontSize: 16, marginLeft: 12, height: '100%', fontWeight: '500' },
   list: { padding: 20, paddingTop: 4 },
   serverCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.card, padding: 18, borderRadius: 20, marginBottom: 12, borderWidth: 1, borderColor: 'transparent' },
